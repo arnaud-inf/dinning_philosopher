@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42antananari      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:54:49 by aelison           #+#    #+#             */
-/*   Updated: 2024/07/23 16:37:32 by aelison          ###   ########.fr       */
+/*   Updated: 2024/07/25 09:45:31 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_disp(t_philo *ph, char *m)
 	if (ph->state != is_dead && *ph->end_routine != 1)
 	{
 		t_stamp = ft_elapsed_time(*ph->start_routine);
-		printf("%-6ld %d %s\n", t_stamp, ph->id, m);
+		printf("%-10ld %d %s\n", t_stamp, ph->id, m);
 	}
 	pthread_mutex_unlock(ph->end);
 	pthread_mutex_unlock(ph->message);
@@ -38,7 +38,7 @@ int	ft_sleeping(t_philo *ph)
 	ph->state = thinking;
 	pthread_mutex_unlock(ph->data);
 	ft_disp(ph, "is sleeping");
-	ft_usleep(ph->t_sleep);
+	ft_usleep(ph->t_sleep, ph);
 	return (0);
 }
 
@@ -67,7 +67,7 @@ void	ft_eating_aux(t_philo *ph)
 	if (ph->nb_meals == ph->nb_have_to_eat)
 		*ph->is_full = *ph->is_full + 1;
 	pthread_mutex_unlock(ph->data);
-	ft_usleep(ph->t_eat);
+	ft_usleep(ph->t_eat, ph);
 }
 
 int	ft_eating(t_philo *ph)
@@ -75,10 +75,10 @@ int	ft_eating(t_philo *ph)
 	pthread_mutex_lock(&ph->first_f->m);
 	ft_disp(ph, "has taken a fork");
 	pthread_mutex_lock(ph->data);
-	if (ph->nb_philo == 1)
+	if (ph->second_f == NULL)
 	{
 		ph->lst_meal = ft_get_time();
-		ft_usleep(ph->t_die * 1000);
+		ft_usleep(ph->t_die, ph);
 		pthread_mutex_unlock(&ph->first_f->m);
 		pthread_mutex_unlock(ph->data);
 		return (1);

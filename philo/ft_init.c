@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42antananari      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:55:04 by aelison           #+#    #+#             */
-/*   Updated: 2024/07/23 15:33:40 by aelison          ###   ########.fr       */
+/*   Updated: 2024/07/24 08:02:10 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ static t_fork	*ft_create_fork(int nb_ph)
 	{
 		res[i].id = i + 1;
 		if (pthread_mutex_init(&res[i].m, NULL) != 0)
-			return (free(res), NULL);
+		{
+			free(res);
+			return (NULL);
+		}
 		i++;
 	}
 	return (res);
@@ -81,11 +84,10 @@ static t_philo	*ft_create_all_ph(t_rules *rules, long t_die,
 	while (i < rules->nb_philo)
 	{
 		res[i] = ft_create_ph(i, rules->nb_philo, rules->fork_array);
-		res[i].nb_philo = rules->nb_philo;
 		res[i].nb_have_to_eat = rules->nb_have_to_eat;
 		res[i].t_die = t_die;
-		res[i].t_eat = t_eat * 1000;
-		res[i].t_sleep = t_sleep * 1000;
+		res[i].t_eat = t_eat;
+		res[i].t_sleep = t_sleep;
 		res[i].end = &rules->end;
 		res[i].data = &rules->data;
 		res[i].message = &rules->message;
@@ -111,6 +113,8 @@ void	ft_init_rule(t_rules *rule, char **argv, int argc)
 	else
 		rule->nb_have_to_eat = -1;
 	rule->fork_array = ft_create_fork(rule->nb_philo);
+	if (rule->fork_array == NULL)
+		ft_clear_all_mutex(rule);
 	rule->philo_array = ft_create_all_ph(rule, ft_atoi(argv[2]),
 			ft_atoi(argv[3]), ft_atoi(argv[4]));
 }

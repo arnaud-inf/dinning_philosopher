@@ -6,21 +6,26 @@
 /*   By: aelison <aelison@student.42antananari      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:55:18 by aelison           #+#    #+#             */
-/*   Updated: 2024/07/23 15:32:46 by aelison          ###   ########.fr       */
+/*   Updated: 2024/07/25 09:47:24 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_usleep(size_t ms)
+int	ft_usleep(size_t ms, t_philo *ph)
 {
 	size_t	start;
-	size_t	new_ms;
 
-	new_ms = ms / 1000;
 	start = ft_get_time();
-	while (ft_get_time() - start < new_ms)
+	while (ft_get_time() - start < ms)
 	{
+		pthread_mutex_lock(ph->end);
+		if (*ph->end_routine == 1)
+		{
+			pthread_mutex_unlock(ph->end);
+			return (EXIT_SUCCESS);
+		}
+		pthread_mutex_unlock(ph->end);
 		if (usleep(1) == -1)
 			return (EXIT_FAILURE);
 	}

@@ -6,7 +6,7 @@
 /*   By: aelison <aelison@student.42antananari      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 07:55:30 by aelison           #+#    #+#             */
-/*   Updated: 2024/07/23 15:33:31 by aelison          ###   ########.fr       */
+/*   Updated: 2024/07/25 09:43:55 by aelison          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	int				id;
-	int				nb_philo;
 	long			nb_meals;
 	size_t			lst_meal;
 	long			nb_have_to_eat;
@@ -79,7 +78,8 @@ int		ft_create_pthread(t_rules *r, int nb_ph);
 int		ft_eating(t_philo *ph);
 int		ft_thinking(t_philo *ph);
 int		ft_sleeping(t_philo *ph);
-int		ft_usleep(size_t ms);
+int		ft_usleep(size_t ms, t_philo *ph);
+int		ft_clear_all_mutex(t_rules *rule);
 void	*ft_monitor(void *arg);
 void	ft_init_rule(t_rules *rule, char **argv, int argc);
 void	ft_disp(t_philo *ph, char *m);
